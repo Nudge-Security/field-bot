@@ -107,10 +107,10 @@ class NudgeClient:
         response = self.post("/api/analysis/app/search", search)
         return response['values']
 
-    def find_field(self, field_name, field_id=None):
+    def find_field(self, field_name, field_identifier=None):
         fields = self.list_fields()
         for field_def in fields:
-            if field_id and field_def['id'] == field_id:
+            if field_identifier and field_def['identifier'] == field_identifier:
                 return field_def
             if field_def['name'] == field_name:
                 return field_def
