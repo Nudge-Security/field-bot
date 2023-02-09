@@ -32,6 +32,7 @@ def list_fields(nudge_client:NudgeClient, field, value, app_name):
         value = click.prompt("Please input the number of the app you wish to set the field on: ",
                               type=click.IntRange(1, count))
         app_id = apps[value]['id']
-    nudge_client.set_app_field(app_id, field, value)
+    field_id, value_id = nudge_client.get_ids_for_field_and_value(field, value)
+    nudge_client.set_app_field(app_id, field_id, value_id)
 
 

@@ -75,8 +75,7 @@ class NudgeClient:
     def _get_csrf_token_from_cookies(self):
         return next((cookie.value for cookie in self.session.cookies if cookie.name == "_csrf_token"), None)
 
-    def set_app_field(self, entity, field, value):
-        field_id, value_id = self.get_ids_for_field_and_value(field, value)
+    def set_app_field(self, entity, field_id, value_id):
         body = {
             "value": str(value_id)
         }
@@ -90,7 +89,14 @@ class NudgeClient:
         if response.status_code == 200:
             return response.json()
         else:
-            raise Exception(f"Error with post {api} {response.json()}")
+            raise ClickException(f"Error with post {api} {response.json()}")
+    def put(self, api, body):
+        response = self.session.put(f"{nudge_url_target}{api}", json=body,
+                                     headers=self._get_auth_header(csrf=True))
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise ClickException(f"Error with put {api} {response.json()}")
 
     def find_app(self, app_name):
         # {"search":[{"field":"service_info.name","op":"ilike","value":"%Zoom%"},{"field":"service_info.category.name","op":"ilike","value":"%Zoom%"}],"filters":[],"page":1,"per_page":50,"sort":"account_count","sort_dir":"desc"}
@@ -101,9 +107,11 @@ class NudgeClient:
         response = self.post("/api/analysis/app/search", search)
         return response['values']
 
-    def find_field(self, field_name):
+    def find_field(self, field_name, field_id=None):
         fields = self.list_fields()
         for field_def in fields:
+            if field_id and field_def['id'] == field_id:
+                return field_def
             if field_def['name'] == field_name:
                 return field_def
         return None
@@ -112,8 +120,20 @@ class NudgeClient:
         body = {
             "name": field_name,
             "field_type": field_type.upper(),
-            "scopes": [field_scope.upper()]
+            "scopes": [field_s.upper() for field_s in field_scope]
         }
         if allowed_values:
             body['allowed_values'] = [{'identifier': str(uuid.uuid4()), "value": value} for value in allowed_values]
         self.post('/api/fields/', body=body)
+
+    def update_field(self, field_identifier, field_name, allowed_values, field_scope):
+        body = {
+            "identifier":field_identifier,
+        }
+        if field_name:
+            body['name'] = field_name
+        if field_scope and len(field_scope) >0:
+            body['scopes'] = [field_s.upper() for field_s in field_scope]
+        if allowed_values:
+            body['allowed_values'] = [{'identifier': str(uuid.uuid4()), "value": value} for value in allowed_values]
+        self.put('/api/fields/', body=body)

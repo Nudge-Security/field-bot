@@ -26,39 +26,15 @@ def list_fields(nudge_client:NudgeClient, field, value, app_list, dry_run):
     field_id, value_id = nudge_client.get_ids_for_field_and_value(field, value)
     lines = []
     for line in app_list.readlines():
-        lines.append(line)
+        lines.append(line.strip())
     if _is_app_names(lines):
         raise ClickException("The app list appears to be names instead of app"
                              " ids use the 'transform-app-list' command to fix")
-    apps_to_update ={}
-    apps_not_found=[]
-    for line in lines:
-        app_name = line.strip()
-        apps = nudge_client.find_app(app_name=app_name)
-        app = None
-        if not apps or len(apps) == 0:
-            click.secho(f"Unable to find app {app_name}", fg='red')
-            apps_not_found.append(app_name)
-            continue
-        if len(apps)>1:
-            click.secho(f"Found ambiguous app name {app_name}", fg='red')
-            count = 0
-            for app in apps:
-                count +=1
-                click.secho(f"{count}. {utility.print_app(app)}")
-            index = click.prompt("Please input the number of the app you wish to set the field on: ", type=click.IntRange(1, count))
-            app = apps[index]
-        else:
-            app = apps[0]
-        if app:
-            apps_to_update[app['id']] = app['service_info']['name']
-    for id,name in apps_to_update.items():
+
+    for id in lines.items():
         if dry_run:
-            click.secho(f"Updating {name}: {id}")
+            click.secho(f"Updating: {id}")
         else:
-            click.secho(f"Updating {name}: {id} to {field} : {value}")
-            nudge_client.set_app_field(id, field, value)
-    click.secho(f"Finished updating {len(apps_to_update)}")
-    click.secho(f"Could not find {len(apps_not_found)} apps")
-    for name in apps_not_found:
-        click.secho(name,fg='red')
+            click.secho(f"Updating : {id} to {field} : {value}")
+            nudge_client.set_app_field(id, field_id, value_id)
+    click.secho(f"Finished updating {len(lines)}")
