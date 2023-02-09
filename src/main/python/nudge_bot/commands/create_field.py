@@ -18,4 +18,4 @@ def list_fields(nudge_client:NudgeClient,field_scope, field_name, field_type, al
     existing_field = nudge_client.find_field(field_name)
     if existing_field is not None:
         raise ClickException(f"Field {field_name} already exists!")
-    nudge_client.create_field(field_name, field_type, allowed_value)
+    nudge_client.create_field(field_name, field_type, allowed_value, field_scope)

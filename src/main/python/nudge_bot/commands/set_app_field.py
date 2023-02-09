@@ -12,13 +12,12 @@ from nudge_bot.main import cli
 @click.option('--field',     help='The field to set')
 @click.option('--value',     help='The value to set')
 @click.option('--app-name',     help='The name of the app to set the field on')
-@click.option('--domain',     help='The domain of the app to set the field on')
 @click.pass_obj
-def list_fields(nudge_client:NudgeClient, field, value, app_name, domain):
-    apps = nudge_client.find_app(app_name,domain)
+def list_fields(nudge_client:NudgeClient, field, value, app_name):
+    apps = nudge_client.find_app(app_name)
     app_id = None
     if len(apps) == 0:
-        click.secho(f"No apps found for name: {app_name} domain: {domain}")
+        click.secho(f"No apps found for : {app_name} ")
     elif len(apps) == 1:
         app = apps[0]
         click.confirm(f"We found one app - is this right? {utility.print_app(app)}",abort=True )

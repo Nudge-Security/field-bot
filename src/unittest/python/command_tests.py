@@ -45,3 +45,15 @@ class CommandlineTestCase(unittest.TestCase):
         result = runner.invoke(cli, [ 'create-field', '--field-name',"Legal Review","--field-type", "Select",'--field-scope','SAAS', '--allowed-value',"In Review", '--allowed-value',"Approved"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 1, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_transform_app_list(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, [ 'transform-app-list', '--app-list',self._get_absolute_path_for_resource("app_list.txt")])
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_transform_ambig_app_list(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, [ 'transform-app-list', '--app-list',self._get_absolute_path_for_resource("ambiguous_app_name.txt")], input="1\n")
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")

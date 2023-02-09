@@ -92,16 +92,12 @@ class NudgeClient:
         else:
             raise Exception(f"Error with post {api} {response.json()}")
 
-    def find_app(self, app_name, domain):
+    def find_app(self, app_name):
         # {"search":[{"field":"service_info.name","op":"ilike","value":"%Zoom%"},{"field":"service_info.category.name","op":"ilike","value":"%Zoom%"}],"filters":[],"page":1,"per_page":50,"sort":"account_count","sort_dir":"desc"}
-        search = None
-        if app_name:
-            search = {"search": [{"field": "service_info.name", "op": "ilike", "value": f"%{app_name}%"}],
-                      "filters": [], "page": 1, "per_page": 50, "sort": "account_count", "sort_dir": "desc"}
-        elif domain:
-            search = {
-                "search": [{"field": "service_info.service_canonical_domain", "op": "ilike", "value": f"%{domain}%"}],
-                "filters": [], "page": 1, "per_page": 50, "sort": "account_count", "sort_dir": "desc"}
+        search = {"search": [{"field": "service_info.name", "op": "ilike", "value": f"%{app_name}%"},
+                             {"field": "service_info.service_canonical_domain", "op": "ilike", "value": f"%{app_name}%"}],
+                  "filters": [], "page": 1, "per_page": 50, "sort": "account_count", "sort_dir": "desc"}
+
         response = self.post("/api/analysis/app/search", search)
         return response['values']
 
@@ -112,10 +108,11 @@ class NudgeClient:
                 return field_def
         return None
 
-    def create_field(self, field_name, field_type, allowed_values):
+    def create_field(self, field_name, field_type, allowed_values, field_scope):
         body = {
             "name": field_name,
-            "field_type": field_type.upper()
+            "field_type": field_type.upper(),
+            "scopes": [field_scope.upper()]
         }
         if allowed_values:
             body['allowed_values'] = [{'identifier': str(uuid.uuid4()), "value": value} for value in allowed_values]
