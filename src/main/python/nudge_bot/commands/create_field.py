@@ -7,8 +7,8 @@ from nudge_bot.main import cli
 
 @cli.command(name='create-field',short_help="Create a field")
 @click.option('--field-name',     help='The field to create', required=True)
-@click.option('--field-scope',     help='The scope for the field',type=click.Choice(['SAAS','SAAS_ACCOUNT','USER']), required=True)
-@click.option('--field-type',     help='The type of field to create', type=click.Choice(['MultiSelect','Select']), default='Select', required=True)
+@click.option('--field-scope',     help='The scope for the field',type=click.Choice(['SAAS','SAAS_ACCOUNT','USER']), required=True,multiple=True)
+@click.option('--field-type',     help='The type of field to create', type=click.Choice(['Multi_Select','Select']), default='Select', required=True)
 @click.option('--allowed-value',     help='The value for the field (can be specified multpile times)', multiple=True)
 @click.pass_obj
 def create_field(nudge_client:NudgeClient,field_scope, field_name, field_type, allowed_value):

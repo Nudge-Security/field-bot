@@ -1,1 +1,5 @@
-38447
+38480, Zoom Video Communications, Acceptable
+38486, Miro, Acceptable
+38514, Webflow, Acceptable
+38553, Docker, Acceptable
+38538, DocSend, Acceptable

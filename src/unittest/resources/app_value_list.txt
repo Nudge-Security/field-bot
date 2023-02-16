@@ -1,0 +1,5 @@
+zoom, High
+Miro, Medium
+Webflow, Low
+Docker, High
+DocSend, Low

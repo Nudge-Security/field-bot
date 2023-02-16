@@ -149,7 +149,7 @@ class Cognito:
         setattr(self, f"{token_use}_claims", verified)
         return verified
 
-    def check_token(self, renew=True):
+    def is_token_expired(self, renew=True):
         """
         Checks the exp attribute of the access_token and either refreshes
         the tokens by calling the renew_access_tokens method or does nothing

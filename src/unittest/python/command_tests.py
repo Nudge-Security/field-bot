@@ -31,12 +31,24 @@ class CommandlineTestCase(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(cli, ['search-app', '--app-name', "zoom"])
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+    def test_search_app_field(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['search-app',"--field-name", "Approval Status", "--field-value", "Approved",
+                                     "--field-name", "Approval Status", "--field-value", "Acceptable"
+                                     ])
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
     def test_bulk_app_set(self):
         runner = CliRunner()
-        with runner.isolated_filesystem():
-            result = runner.invoke(cli, ['bulk-set-app-field', '--field', "APPROVAL STATUS", "--value", "ACCEPTABLE",
+        result = runner.invoke(cli, ['bulk-set-app-field', '--field', "APPROVAL STATUS", "--value", "ACCEPTABLE",
                                          '--app-list', _get_absolute_path_for_resource("transformed_list.txt")])
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_bulk_app_value_set(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['bulk-set-app-field', '--field', "Approval Status", '--dry-run',
+                                         '--app-value-list', _get_absolute_path_for_resource("transformed_list.txt")])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
@@ -48,18 +60,38 @@ class CommandlineTestCase(unittest.TestCase):
         print(result.stdout)
         self.assertEqual(result.exit_code, 1, f"Did not get good exit code: {result.stdout} {result.exception}")
 
+    # def test_create_field(self):
+    #     runner = CliRunner()
+    #     result = runner.invoke(cli, ['create-field', '--field-name', "Legal Review", "--field-type", "Select",
+    #                                  '--field-scope', 'SAAS', '--allowed-value', "In Review", '--allowed-value',
+    #                                  "Approved"])
+    #     print(result.stdout)
+    #     self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+    # def test_add_okta_support(self):
+    #     runner = CliRunner()
+    #     result = runner.invoke(cli, ['set-okta-support-field', '--okta-dict', "/Users/rspitler/code/nudge-frontend/service/src/main/python/service_rest_api/api/okta_dict.json"])
+    #     print(result.stdout)
+    #     self.assertEqual(result.exit_code, 1, f"Did not get good exit code: {result.stdout} {result.exception}")
+
     def test_update_field(self):
         runner = CliRunner()
-        result = runner.invoke(cli, ['update-field', '--field-id', "8932",'--field-name', "Legal Review",
-                                     '--field-scope', 'SAAS', '--allowed-value', "In Review", '--allowed-value',
-                                     "Approved", "--allowed-value","Out of Scope"])
+        result = runner.invoke(cli, ['update-field', '--field-identifier', "87405815-651f-47e1-9c57-e3d810d2240a",
+                                     '--field-name', "Legal Review",'--field-scope', 'SAAS', '--allowed-value',
+                                     "In Review", '--allowed-value', "Approved", "--allowed-value","Out of Scope"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
     def test_transform_app_list(self):
         runner = CliRunner()
         result = runner.invoke(cli, ['transform-app-list', '--app-list',
-                                     _get_absolute_path_for_resource("app_list.txt")])
+                                         _get_absolute_path_for_resource("app_list.txt")])
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_transform_app_value_list(self):
+        runner = CliRunner(mix_stderr=True)
+        result = runner.invoke(cli, ['transform-app-list', '--app-list',
+                                         _get_absolute_path_for_resource("app_value_list.txt")])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
@@ -67,5 +99,29 @@ class CommandlineTestCase(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(cli, ['transform-app-list', '--app-list',
                                      _get_absolute_path_for_resource("ambiguous_app_name.txt")], input="1\n")
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_search_app_by_field_list(self):
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['search-app', '--field-name',"Approval Status", "--field-value","Approved", "--output-id-list"])
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_search_app_by_field_not_set(self):
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['search-app', '--field-name',"Approval Status", "--field-value","None", "--output-id-list"])
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
+    def test_search_app_by_multiple_field_list(self):
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['search-app',
+                                         '--field-name', "Approval Status", "--field-value","Approved",
+                                         '--field-name', "SSO Provider", "--field-value","Okta",
+                                         "--output-id-list"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
