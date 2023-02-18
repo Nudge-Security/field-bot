@@ -118,10 +118,9 @@ class CommandlineTestCase(unittest.TestCase):
 
     def test_search_app_by_multiple_field_list(self):
         runner = CliRunner()
-        with runner.isolated_filesystem():
-            result = runner.invoke(cli, ['search-app',
+        result = runner.invoke(cli, ['search-app',
                                          '--field-name', "Approval Status", "--field-value","Approved",
                                          '--field-name', "SSO Provider", "--field-value","Okta",
-                                         "--output-id-list"])
+                                         "--output-to-file","--output-format","CSV"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")

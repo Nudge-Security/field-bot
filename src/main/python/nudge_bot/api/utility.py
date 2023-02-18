@@ -3,6 +3,7 @@ from collections import defaultdict
 from typing import List
 
 import click
+import pydash
 
 from nudge_bot.api.nudge import NudgeClient
 
@@ -104,3 +105,37 @@ def resolve_app(app_name, nudge_client: NudgeClient, interactive=False) -> AppRe
     else:
         app = apps[0]
     return AppResolution(status=ResolutionStatus.RESOLVED, app_name=app_name, app=app)
+
+
+def _get_field_value(name, fields_):
+    found_fields = pydash.filter_(fields_, lambda x: pydash.get(x, 'field.name') == name)
+    if len(found_fields)>0:
+        return ":".join(pydash.flat_map(found_fields,lambda x: pydash.get(x,'allowed_value.value')))
+    return 'Not Set'
+
+
+def get_fields(value, field_names):
+    fields_ = value['fields']
+    ret = []
+    for name in field_names:
+        ret.append(_get_field_value(name,fields_))
+    return ret
+
+
+def get_category(app):
+    return pydash.get(app,'service_info.category.name')
+
+
+def get_account_count(app):
+    return pydash.get(app,'counters.total_accounts')
+
+
+def _extract_scopes(x):
+    return pydash.flat_map(pydash.get(x,'field_scopes') ,lambda y: y['scope'])
+
+
+def get_field_names(fields, scope=None):
+    fields = sorted(fields,key=lambda field: field['name'])
+    if scope:
+        fields = pydash.filter_(fields, lambda x: (scope.lower() in _extract_scopes(x)))
+    return [ field['name'] for field in fields]
