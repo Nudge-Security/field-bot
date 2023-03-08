@@ -17,6 +17,10 @@ def get_app_name(app):
     return name_.replace(',', '')
 
 
+def get_canonical_domain(app):
+    return pydash.get(app, 'service_info.service_canonical_domain')
+
+
 class ResolutionStatus(enum.Enum):
     RESOLVED = "RESOLVED",
     AMBIGUOUS = "AMBIGUOUS",
@@ -109,8 +113,8 @@ def resolve_app(app_name, nudge_client: NudgeClient, interactive=False) -> AppRe
 
 def _get_field_value(name, fields_):
     found_fields = pydash.filter_(fields_, lambda x: pydash.get(x, 'field.name') == name)
-    if len(found_fields)>0:
-        return ":".join(pydash.flat_map(found_fields,lambda x: pydash.get(x,'allowed_value.value')))
+    if len(found_fields) > 0:
+        return ":".join(pydash.flat_map(found_fields, lambda x: pydash.get(x, 'allowed_value.value')))
     return 'Not Set'
 
 
@@ -118,24 +122,24 @@ def get_fields(value, field_names):
     fields_ = value['fields']
     ret = []
     for name in field_names:
-        ret.append(_get_field_value(name,fields_))
+        ret.append(_get_field_value(name, fields_))
     return ret
 
 
 def get_category(app):
-    return pydash.get(app,'service_info.category.name')
+    return pydash.get(app, 'service_info.category.name')
 
 
 def get_account_count(app):
-    return pydash.get(app,'counters.total_accounts')
+    return pydash.get(app, 'counters.total_accounts')
 
 
 def _extract_scopes(x):
-    return pydash.flat_map(pydash.get(x,'field_scopes') ,lambda y: y['scope'])
+    return pydash.flat_map(pydash.get(x, 'field_scopes'), lambda y: y['scope'])
 
 
 def get_field_names(fields, scope=None):
-    fields = sorted(fields,key=lambda field: field['name'])
+    fields = sorted(fields, key=lambda field: field['name'])
     if scope:
         fields = pydash.filter_(fields, lambda x: (scope.lower() in _extract_scopes(x)))
-    return [ field['name'] for field in fields]
+    return [field['name'] for field in fields]

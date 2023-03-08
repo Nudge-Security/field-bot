@@ -88,6 +88,13 @@ class CommandlineTestCase(unittest.TestCase):
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
+    def test_supply_chain_list(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['supply-chain', '--app-name',
+                                         'Atlassian'])
+        print(result.stdout)
+        self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+
     def test_transform_app_value_list(self):
         runner = CliRunner(mix_stderr=True)
         result = runner.invoke(cli, ['transform-app-list', '--app-list',

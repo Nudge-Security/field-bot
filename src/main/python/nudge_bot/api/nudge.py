@@ -199,3 +199,6 @@ class NudgeClient:
         if allowed_values:
             body['allowed_values'] = [{'identifier': str(uuid.uuid4()), "value": value} for value in allowed_values]
         self.put('/api/fields/', body=body)
+
+    def get_supply_chain(self, canonical_domain):
+        return self.get(f'/api/service/vendors/{canonical_domain}')['vendors']
