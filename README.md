@@ -31,4 +31,3 @@ Commands:
     transform-app-list      Transform list of app names or domains to internal identifier
 
     update-field            Update a field
-`
