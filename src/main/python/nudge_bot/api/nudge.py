@@ -202,3 +202,6 @@ class NudgeClient:
 
     def get_supply_chain(self, canonical_domain):
         return self.get(f'/api/service/vendors/{canonical_domain}')['vendors']
+
+    def get_service_info(self, canonical_domain):
+        return self.get(f'/api/service/details/{canonical_domain}')
