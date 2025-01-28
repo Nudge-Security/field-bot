@@ -13,9 +13,9 @@ from nudge_bot.main import cli
 @click.option('--field-value', help="The field value to search (use \'None\' to search for unset fields)",
               multiple=True)
 @click.option('--output-to-file', help='Use this flag print to file', is_flag=True)
-@click.option('--output-format', help='The output format', type=click.Choice(['Id', 'CSV']), default='Id')
+@click.option('--output-format', help='The output format', type=click.Choice(['Id', 'CSV']), default='CSV')
 @click.option('--output-file', help='The file to write the search results', type=click.File('w'),
-              default="search_list.txt")
+              default="search_list.csv")
 @click.pass_obj
 def search_app(nudge_client: NudgeClient, app_name,category, field_name, field_value, output_to_file, output_file,
                 output_format):
