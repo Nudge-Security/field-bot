@@ -35,7 +35,7 @@ def list_fields(nudge_client:NudgeClient, field, value, app_name):
         if value == count:
             raise ClickException("Please try again with a more restrictive search")
         app_id = apps[value-1]['id']
-    field_id, value_id = nudge_client.get_ids_for_field_and_value(field, value)
-    nudge_client.set_app_field(app_id, field_id, value_id)
+    field_id = nudge_client.get_ids_for_field(field, value)
+    nudge_client.set_app_field(app_id, field_id, value)
 
 

@@ -5,10 +5,10 @@ from nudge_bot.api.nudge import NudgeClient
 
 
 @click.group()
-@click.option('--refresh-token', envvar='REFRESH_TOKEN',  help='Bearer token for authentication')
+@click.option('--api-token', envvar='API_TOKEN',  help='Bearer token for authentication')
 @click.pass_context
-def cli(ctx, refresh_token):
-    ctx.obj = NudgeClient(refresh_token)
+def cli(ctx, api_token):
+    ctx.obj = NudgeClient(api_token)
 
 
 # noinspection PyUnresolvedReferences

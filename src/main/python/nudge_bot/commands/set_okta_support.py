@@ -50,13 +50,13 @@ def set_okta_support(nudge_client:NudgeClient, okta_dict, use_flag):
             if not use_flag:
                 for feature in okta_features:
                     if feature in supported_protocols:
-                        field_id, value_id = nudge_client.get_ids_for_field_and_value('OKTA Support', feature)
+                        field_id = nudge_client.get_ids_for_field('OKTA Support', feature)
                         click.secho(f"\tSetting value {feature}")
-                        nudge_client.set_app_field(app_id, field_id, value_id)
+                        nudge_client.set_app_field(app_id, field_id, value)
             else:
                 if any(value in acceptable_protocols for value in okta_features):
-                    field_id, value_id = nudge_client.get_ids_for_field_and_value('OKTA Support', 'Yes')
+                    field_id = nudge_client.get_ids_for_field('OKTA Support', 'Yes')
                     click.secho(f"\tSetting value 'Yes'")
-                    nudge_client.set_app_field(app_id, field_id, value_id)
+                    nudge_client.set_app_field(app_id, field_id, 'Yes')
 
 

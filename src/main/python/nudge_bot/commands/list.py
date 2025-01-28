@@ -11,8 +11,8 @@ def list_fields(ctx:NudgeClient, field_name):
     field_list = ctx.list_fields()
     field_name = [field.lower() for field in field_name]
     for field in field_list:
-        scopes = [scope['scope'] for scope in field['field_scopes']]
+        scopes = field['scopes']
         if len(field_name) == 0 or field['name'].lower() in field_name:
-            click.secho(f"Name: {field['name']} Identifier: {field['identifier']} Scope: {', '.join(scopes)}" , fg='green')
+            click.secho(f"Name: {field['name']} Identifier: {field['id']} Scope: {', '.join(scopes)}" , fg='green')
             for value in field['allowed_values']:
                 click.secho(f"\tValue: {value['value']}", fg='blue')

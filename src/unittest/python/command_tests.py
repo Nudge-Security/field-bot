@@ -55,7 +55,7 @@ class CommandlineTestCase(unittest.TestCase):
     def test_create_duplicate_field(self):
         runner = CliRunner()
         result = runner.invoke(cli, ['create-field', '--field-name', "Legal Review", "--field-type", "Select",
-                                     '--field-scope', 'SAAS', '--allowed-value', "In Review", '--allowed-value',
+                                     '--field-scope', 'app', '--allowed-value', "In Review", '--allowed-value',
                                      "Approved"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 1, f"Did not get good exit code: {result.stdout} {result.exception}")
@@ -75,8 +75,8 @@ class CommandlineTestCase(unittest.TestCase):
 
     def test_update_field(self):
         runner = CliRunner()
-        result = runner.invoke(cli, ['update-field', '--field-identifier', "87405815-651f-47e1-9c57-e3d810d2240a",
-                                     '--field-name', "Legal Review",'--field-scope', 'SAAS', '--allowed-value',
+        result = runner.invoke(cli, ['update-field', '--field-identifier', "9256",
+                                     '--field-name', "Legal Review",'--field-scope', 'app', '--allowed-value',
                                      "In Review", '--allowed-value', "Approved", "--allowed-value","Out of Scope"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
@@ -91,14 +91,14 @@ class CommandlineTestCase(unittest.TestCase):
     def test_supply_chain_list(self):
         runner = CliRunner()
         result = runner.invoke(cli, ['supply-chain', '--app-name',
-                                         'Atlassian'])
+                                         'teams'])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
     def test_service_info(self):
         runner = CliRunner()
         result = runner.invoke(cli, ['app-info', '--domain',
-                                         'google.com'])
+                                         'slack.com'])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
@@ -119,16 +119,22 @@ class CommandlineTestCase(unittest.TestCase):
     def test_search_app_by_field_list(self):
         runner = CliRunner()
         with runner.isolated_filesystem():
-            result = runner.invoke(cli, ['search-app', '--field-name',"Approval Status", "--field-value","Approved", "--output-id-list"])
+            result = runner.invoke(cli, ['search-app', '--field-name',"Approval Status", "--field-value","Approved", "--output-to-file"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
     def test_search_app_by_field_not_set(self):
         runner = CliRunner()
         with runner.isolated_filesystem():
-            result = runner.invoke(cli, ['search-app', '--field-name',"Approval Status", "--field-value","None", "--output-id-list"])
+            result = runner.invoke(cli, ['search-app', '--field-name',"Approval Status", "--field-value","None", "--output-to-file"])
         print(result.stdout)
         self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
+    def test_search_app_by_category(self):
+            runner = CliRunner()
+            with runner.isolated_filesystem():
+                result = runner.invoke(cli, ['search-app', '--category',"AI Tools",  "--output-to-file"])
+            print(result.stdout)
+            self.assertEqual(result.exit_code, 0, f"Did not get good exit code: {result.stdout} {result.exception}")
 
     def test_search_app_by_multiple_field_list(self):
         runner = CliRunner()

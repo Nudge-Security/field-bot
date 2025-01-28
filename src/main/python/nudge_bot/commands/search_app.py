@@ -8,6 +8,7 @@ from nudge_bot.main import cli
 
 @cli.command(name='search-app', short_help="Search for an app")
 @click.option('--app-name', help='The app name')
+@click.option('--category', help='The app category')
 @click.option('--field-name', help='The field name to search (optional)', multiple=True)
 @click.option('--field-value', help="The field value to search (use \'None\' to search for unset fields)",
               multiple=True)
@@ -16,12 +17,14 @@ from nudge_bot.main import cli
 @click.option('--output-file', help='The file to write the search results', type=click.File('w'),
               default="search_list.txt")
 @click.pass_obj
-def list_fields(nudge_client: NudgeClient, app_name, field_name, field_value, output_to_file, output_file,
+def search_app(nudge_client: NudgeClient, app_name,category, field_name, field_value, output_to_file, output_file,
                 output_format):
     if len(field_name) != len(field_value):
         raise ClickException("Please provide values for every field to search, use \'None\' to search for unset fields")
     if app_name:
         values = nudge_client.find_app(app_name)
+    elif category:
+        values = nudge_client.find_app_by_category(category)
     elif len(field_name) > 0:
         values = nudge_client.find_app_by_field(field_name, field_value)
     else:

@@ -33,7 +33,7 @@ def list_fields(nudge_client:NudgeClient, field, value, app_list,app_value_list,
     to_read = app_list if app_list else app_value_list
 
     # do this to verify we can find the right field and value
-    field_id, value_id = nudge_client.get_ids_for_field_and_value(field, value)
+    field_id = nudge_client.get_ids_for_field(field, value)
     lines = []
     for line in to_read.readlines():
         lines.append(line.strip().split(','))
@@ -51,10 +51,10 @@ def list_fields(nudge_client:NudgeClient, field, value, app_list,app_value_list,
                 if len(meta) != 3:
                     raise ClickException(f"Entry found without all values {meta}")
                 value = meta[2].strip()
-                field_id, value_id = nudge_client.get_ids_for_field_and_value(field, value)
+                field_id = nudge_client.get_ids_for_field(field, value)
 
             if dry_run:
                 click.secho(f"Updating: {name}  to {field} : {value}")
             else:
-                nudge_client.set_app_field(id, field_id, value_id)
+                nudge_client.set_app_field(id, field_id, value)
     click.secho(f"Finished updating {len(lines)}")
