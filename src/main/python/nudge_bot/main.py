@@ -5,7 +5,7 @@ from nudge_bot.api.nudge import NudgeClient
 
 
 @click.group()
-@click.option('--api-token', envvar='API_TOKEN',  help='Bearer token for authentication')
+@click.option('--api-token', envvar='API_TOKEN',  help='API token for authentication')
 @click.pass_context
 def cli(ctx, api_token):
     ctx.obj = NudgeClient(api_token)
