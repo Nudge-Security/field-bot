@@ -1,12 +1,8 @@
 import logging
-import urllib.parse
-import uuid
 
 import requests
 from click import ClickException
 from tldextract import tldextract
-
-from nudge_bot.api.congito_helper import Cognito
 
 nudge_url_target = "https://api.nudgesecurity.io/api/1.0"
 
